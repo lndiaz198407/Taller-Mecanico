@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Taller Dico — Sistema de Gestión</title>
+
+  <!-- Google Fonts: Bebas Neue (display) + DM Sans (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Íconos Lucide (SVG inline via CDN) -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- =============================================
+       HEADER / NAVEGACIÓN PRINCIPAL
+       ============================================= -->
+  <header class="header">
+    <div class="header__brand">
+      <!-- Logo + Nombre -->
+      <div class="header__logo">
+        <img src="IMG_3142.PNG" alt="Dico Racing" class="header__logo-img" />
+        <div class="header__brand-text">
+          <span class="header__brand-name">Taller Dico</span>
+          <span class="header__brand-sub">Sistema de Gestión</span>
+        </div>
+      </div>
+
+      <!-- Menú de navegación principal -->
+      <nav class="header__nav" role="navigation" aria-label="Menú principal">
+        <button class="nav-btn active" data-section="clientes" aria-current="page">
+          <i data-lucide="users"></i>
+          Clientes
+        </button>
+        <button class="nav-btn" data-section="vehiculos">
+          <i data-lucide="car"></i>
+          Vehículos
+        </button>
+      </nav>
+    </div>
+
+    <!-- Indicador de conexión con Google Sheets -->
+    <div class="header__status">
+      <span class="status-dot status-dot--ok" id="connectionStatus" title="Datos simulados (reemplazar con Google Apps Script)"></span>
+      <span class="status-label">Modo Demo</span>
+    </div>
+  </header>
+
+  <!-- =============================================
+       ÁREA DE CONTENIDO DINÁMICO (SPA)
+       El JS inyectará las secciones aquí
+       ============================================= -->
+  <main class="main" id="mainContent" role="main">
+
+    <!-- ── SECCIÓN: CLIENTES ── -->
+    <section class="section" id="section-clientes" aria-label="Gestión de Clientes">
+
+      <!-- Encabezado de sección -->
+      <div class="section__header">
+        <div>
+          <h1 class="section__title">Clientes</h1>
+          <p class="section__subtitle">Registro y ficha de clientes activos</p>
+        </div>
+        <button class="btn btn--primary" id="btnAgregarCliente">
+          <i data-lucide="user-plus"></i>
+          Agregar Cliente
+        </button>
+      </div>
+
+      <!-- Barra de búsqueda con filtro en tiempo real -->
+      <div class="search-bar">
+        <i data-lucide="search" class="search-bar__icon"></i>
+        <input
+          type="search"
+          id="searchClientes"
+          class="search-bar__input"
+          placeholder="Buscar por nombre…"
+          aria-label="Filtrar clientes por nombre"
+          autocomplete="off"
+        />
+        <!-- Contador de resultados -->
+        <span class="search-bar__count" id="countClientes">0 registros</span>
+      </div>
+
+      <!-- Tabla de clientes -->
+      <div class="table-wrapper">
+        <table class="data-table" id="tablaClientes" aria-label="Listado de clientes">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Teléfono 1</th>
+              <th>Direccion</th>
+              <th>Email</th>
+             <!--  <th>Estado</th> -->
+            </tr>
+          </thead>
+          <!-- El JS renderiza las filas aquí -->
+          <tbody id="tbodyClientes"></tbody>
+        </table>
+
+        <!-- Mensaje cuando no hay resultados -->
+        <div class="table-empty" id="emptyClientes" hidden>
+          <i data-lucide="inbox"></i>
+          <p>Sin resultados para tu búsqueda.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── SECCIÓN: VEHÍCULOS ── -->
+    <section class="section hidden" id="section-vehiculos" aria-label="Gestión de Vehículos">
+
+      <div class="section__header">
+        <div>
+          <h1 class="section__title">Vehículos</h1>
+          <p class="section__subtitle">Flota registrada en el sistema</p>
+        </div>
+        <button class="btn btn--primary" id="btnAgregarVehiculo">
+          <i data-lucide="plus-circle"></i>
+          Agregar Vehículo
+        </button>
+      </div>
+
+      <!-- Barra de búsqueda vehículos -->
+      <div class="search-bar">
+        <i data-lucide="search" class="search-bar__icon"></i>
+        <input
+          type="search"
+          id="searchVehiculos"
+          class="search-bar__input"
+          placeholder="Buscar por patente, marca o modelo…"
+          aria-label="Filtrar vehículos"
+          autocomplete="off"
+        />
+        <span class="search-bar__count" id="countVehiculos">0 registros</span>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="data-table" id="tablaVehiculos" aria-label="Listado de vehículos">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Patente</th>
+              <th>Marca</th>
+              <th>Modelo</th>
+              <th>Año</th>
+              <th>Color</th>
+              <th>Cliente</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyVehiculos"></tbody>
+        </table>
+        <div class="table-empty" id="emptyVehiculos" hidden>
+          <i data-lucide="inbox"></i>
+          <p>Sin resultados para tu búsqueda.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =============================================
+       MODAL: AGREGAR / EDITAR CLIENTE
+       ============================================= -->
+  <div class="modal-overlay" id="modalCliente" role="dialog" aria-modal="true" aria-labelledby="modalClienteTitle" hidden>
+    <div class="modal">
+      <div class="modal__header">
+        <h2 class="modal__title" id="modalClienteTitle">Nuevo Cliente</h2>
+        <button class="modal__close" data-close="modalCliente" aria-label="Cerrar modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form class="modal__form" id="formCliente" novalidate>
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="inputNombre">Nombre completo *</label>
+            <input type="text" id="inputNombre" name="nombre" required placeholder="Ej: Juan Pérez" />
+          </div>
+          <div class="form-field">
+            <label for="inputEmail">Email</label>
+            <input type="email" id="inputEmail" name="email" placeholder="Ej: juan@mail.com" />
+          </div>
+          <div class="form-field">
+            <label for="inputTel1">Teléfono principal *</label>
+            <input type="tel" id="inputTel1" name="telefono1" required placeholder="Ej: +54 9 11 1234-5678" />
+          </div>
+          <div class="form-field">
+            <label for="inputTel2">Dirección</label>
+            <input type="tel" id="inputTel2" name="telefono2" placeholder="Opcional" />
+          </div>
+        </div>
+        <!-- Campo oculto para modo edición -->
+        <input type="hidden" id="inputClienteId" name="id" />
+        <div class="modal__actions">
+          <button type="button" class="btn btn--ghost" data-close="modalCliente">Cancelar</button>
+          <button type="submit" class="btn btn--primary" id="btnGuardarCliente">
+            <i data-lucide="save"></i>
+            Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =============================================
+       MODAL: DETALLES DE CLIENTE
+       (se abre con doble clic en una fila)
+       ============================================= -->
+  <div class="modal-overlay" id="modalDetalleCliente" role="dialog" aria-modal="true" aria-labelledby="modalDetalleTitle" hidden>
+    <div class="modal modal--wide">
+      <div class="modal__header">
+        <h2 class="modal__title" id="modalDetalleTitle">Ficha de Cliente</h2>
+        <button class="modal__close" data-close="modalDetalleCliente" aria-label="Cerrar">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <!-- Ficha con datos del cliente -->
+      <div class="client-card" id="fichaCliente">
+        <!-- El JS renderiza los datos aquí -->
+      </div>
+
+      <!-- Sub-tabla: Vehículos del cliente -->
+      <div class="detail-section">
+        <h3 class="detail-section__title">
+          <i data-lucide="car"></i>
+          Vehículos asociados
+        </h3>
+        <div class="table-wrapper">
+          <table class="data-table data-table--compact" id="tablaVehiculosCliente">
+            <thead>
+              <tr>
+                <th>Patente</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Año</th>
+                <th>Color</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyVehiculosCliente"></tbody>
+          </table>
+          <div class="table-empty" id="emptyVehiculosCliente" hidden>
+            <i data-lucide="car-front"></i>
+            <p>Este cliente no tiene vehículos registrados.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal__actions">
+        <button class="btn btn--ghost" data-close="modalDetalleCliente">Cerrar</button>
+        <button class="btn btn--outline" id="btnEditarClienteDetalle">
+          <i data-lucide="edit-3"></i>
+          Editar
+        </button>
+        <button class="btn btn--danger" id="btnEliminarClienteDetalle">
+          <i data-lucide="trash-2"></i>
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================
+       MODAL: AGREGAR VEHÍCULO
+       ============================================= -->
+  <div class="modal-overlay" id="modalVehiculo" role="dialog" aria-modal="true" aria-labelledby="modalVehiculoTitle" hidden>
+    <div class="modal">
+      <div class="modal__header">
+        <h2 class="modal__title" id="modalVehiculoTitle">Nuevo Vehículo</h2>
+        <button class="modal__close" data-close="modalVehiculo" aria-label="Cerrar">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form class="modal__form" id="formVehiculo" novalidate>
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="inputPatente">Patente *</label>
+            <input type="text" id="inputPatente" name="patente" required placeholder="Ej: AB 123 CD" />
+          </div>
+          <div class="form-field">
+            <label for="inputMarca">Marca *</label>
+            <input type="text" id="inputMarca" name="marca" required placeholder="Ej: Toyota" />
+          </div>
+          <div class="form-field">
+            <label for="inputModelo">Modelo *</label>
+            <input type="text" id="inputModelo" name="modelo" required placeholder="Ej: Corolla" />
+          </div>
+          <div class="form-field">
+            <label for="inputAnio">Año</label>
+            <input type="number" id="inputAnio" name="anio" placeholder="Ej: 2020" min="1900" max="2099" />
+          </div>
+          <div class="form-field">
+            <label for="inputColor">Color</label>
+            <input type="text" id="inputColor" name="color" placeholder="Ej: Blanco" />
+          </div>
+          <div class="form-field">
+            <label for="inputClienteVehiculo">Cliente asociado *</label>
+            <!-- El JS puebla este select con clientes activos -->
+            <select id="inputClienteVehiculo" name="id_cliente" required>
+              <option value="">— Seleccionar cliente —</option>
+            </select>
+          </div>
+        </div>
+        <input type="hidden" id="inputVehiculoId" name="id" />
+        <div class="modal__actions">
+          <button type="button" class="btn btn--ghost" data-close="modalVehiculo">Cancelar</button>
+          <button type="submit" class="btn btn--primary">
+            <i data-lucide="save"></i>
+            Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast de notificaciones -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- JS principal (módulo) -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
