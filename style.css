@@ -1,7 +1,7 @@
 /* ==============================================
-   TALLERPRO — Sistema de Gestión
-   style.css
-   
+   TALLER DICO — Sistema de Gestión
+   style.css — v2.0 (con historial de servicios)
+
    Arquitectura CSS:
    1. Variables y tokens de diseño
    2. Reset y base
@@ -11,81 +11,96 @@
    6. Barra de búsqueda
    7. Tablas de datos
    8. Modales
-   9. Formularios
-   10. Botones
-   11. Badges de estado
-   12. Toast / Notificaciones
-   13. Animaciones
-   14. Utilidades
+   9. Ficha de cliente
+   10. Formularios
+   11. Botones
+   12. Badges de estado
+   13. Historial de servicios (NUEVO)
+   14. Detalle de servicio (NUEVO)
+   15. Toast / Notificaciones
+   16. Animaciones
+   17. Utilidades
    ============================================== */
 
 
 /* ── 1. VARIABLES DE DISEÑO ── */
+
+/* ── TEMA OSCURO (por defecto) ── */
 :root {
-  /* Paleta principal: Oscuro industrial con acento naranja */
-  --bg:           #0f1117;        /* Fondo principal */
-  --bg-surface:   #171b26;        /* Superficies (cards, modales) */
-  --bg-elevated:  #1e2333;        /* Elementos elevados (filas hover) */
-  --border:       #2a2f42;        /* Bordes sutiles */
-  --border-focus: #4a5270;        /* Borde en foco */
+  --bg:           #0f1117;
+  --bg-surface:   #171b26;
+  --bg-elevated:  #1e2333;
+  --border:       #2a2f42;
+  --border-focus: #4a5270;
 
-  --accent:       #d6006e;        /* Rosa Dico Racing primario */
-  --accent-hover: #b8005e;        /* Rosa hover */
-  --accent-soft:  rgba(214, 0, 110, 0.12); /* Fondo suave acento */
+  --accent:       #d6006e;
+  --accent-hover: #b8005e;
+  --accent-soft:  rgba(214, 0, 110, 0.12);
 
-  --text-primary:   #e8ecf4;      /* Texto principal */
-  --text-secondary: #8892a4;      /* Texto secundario */
-  --text-muted:     #4e566a;      /* Texto deshabilitado */
+  --text-primary:   #e8ecf4;
+  --text-secondary: #8892a4;
+  --text-muted:     #4e566a;
 
   --success:      #22c55e;
   --danger:       #ef4444;
   --danger-soft:  rgba(239, 68, 68, 0.12);
   --warning:      #eab308;
 
-  /* Tipografía */
   --font-display: 'Bebas Neue', sans-serif;
   --font-body:    'DM Sans', sans-serif;
 
-  /* Espaciado base */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-10: 40px;
+  --space-1: 4px;  --space-2: 8px;   --space-3: 12px;
+  --space-4: 16px; --space-5: 20px;  --space-6: 24px;
+  --space-8: 32px; --space-10: 40px;
 
-  /* Radios */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  --radius-sm: 4px; --radius-md: 8px;
+  --radius-lg: 12px; --radius-xl: 16px;
 
-  /* Sombras */
-  --shadow-md:  0 4px 16px rgba(0,0,0,0.4);
-  --shadow-lg:  0 8px 32px rgba(0,0,0,0.6);
+  --shadow-md:     0 4px 16px rgba(0,0,0,0.4);
+  --shadow-lg:     0 8px 32px rgba(0,0,0,0.6);
   --shadow-accent: 0 0 24px rgba(214, 0, 110, 0.25);
 
-  /* Transición estándar */
   --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
-
-  /* Ancho máximo del contenido */
   --max-width: 1200px;
+
+  /* Variable para la textura de fondo */
+  --dot-color: #2a2f42;
+}
+
+/* ── TEMA CLARO ──
+   Se activa agregando la clase .light al <html>.
+   Sobrescribe solo las variables de color; todo lo demás hereda. */
+html.light {
+  --bg:           #f0f2f7;
+  --bg-surface:   #ffffff;
+  --bg-elevated:  #e8ecf5;
+  --border:       #d0d5e8;
+  --border-focus: #a0aac8;
+
+  --accent:       #d6006e;
+  --accent-hover: #b8005e;
+  --accent-soft:  rgba(214, 0, 110, 0.10);
+
+  --text-primary:   #111827;
+  --text-secondary: #4b5563;
+  --text-muted:     #9ca3af;
+
+  --success:      #16a34a;
+  --danger:       #dc2626;
+  --danger-soft:  rgba(220, 38, 38, 0.10);
+
+  --shadow-md:     0 4px 16px rgba(0,0,0,0.10);
+  --shadow-lg:     0 8px 32px rgba(0,0,0,0.15);
+  --shadow-accent: 0 0 24px rgba(214, 0, 110, 0.20);
+
+  --dot-color: #d0d5e8;
 }
 
 
 /* ── 2. RESET Y BASE ── */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html {
-  font-size: 15px;
-  scroll-behavior: smooth;
-}
+html { font-size: 15px; scroll-behavior: smooth; }
 
 body {
   font-family: var(--font-body);
@@ -93,9 +108,10 @@ body {
   color: var(--text-primary);
   line-height: 1.6;
   min-height: 100vh;
-  /* Fondo con textura de puntos sutil */
-  background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
+  background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
   background-size: 28px 28px;
+  /* Transición suave al cambiar de tema */
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 a { color: var(--accent); text-decoration: none; }
@@ -106,7 +122,6 @@ img, svg { display: block; }
 
 /* ── 3. LAYOUT ── */
 
-/* Header fijo en la parte superior */
 .header {
   position: sticky;
   top: 0;
@@ -122,7 +137,6 @@ img, svg { display: block; }
   gap: var(--space-6);
 }
 
-/* Contenido principal debajo del header */
 .main {
   max-width: var(--max-width);
   margin: 0 auto;
@@ -138,7 +152,6 @@ img, svg { display: block; }
   gap: var(--space-8);
 }
 
-/* Logo */
 .header__logo {
   display: flex;
   align-items: center;
@@ -146,15 +159,32 @@ img, svg { display: block; }
   flex-shrink: 0;
 }
 
-/* Logo imagen */
 .header__logo-img {
-  height: 48px;
+  height: 58px;
   width: auto;
   object-fit: contain;
   border-radius: var(--radius-sm);
 }
 
-/* Texto al lado del logo */
+/* Ícono fallback si la imagen de Drive no carga */
+.header__logo-fallback {
+  width: 48px;
+  height: 48px;
+  background: var(--accent-soft);
+  border: 1px solid rgba(214, 0, 110, 0.3);
+  border-radius: var(--radius-md);
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-size: 22px;
+}
+
+.header__logo-fallback svg {
+  width: 22px;
+  height: 22px;
+  margin: auto;
+}
+
 .header__brand-text {
   display: flex;
   flex-direction: column;
@@ -180,11 +210,6 @@ img, svg { display: block; }
   color: var(--accent);
 }
 
-.header__title {
-  display: none; /* El logo ya incluye el nombre */
-}
-
-/* Botones de navegación */
 .header__nav {
   display: flex;
   align-items: center;
@@ -206,11 +231,7 @@ img, svg { display: block; }
   transition: all var(--transition);
 }
 
-.nav-btn svg {
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
-}
+.nav-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
 
 .nav-btn:hover {
   background-color: var(--bg-elevated);
@@ -218,14 +239,12 @@ img, svg { display: block; }
   border-color: var(--border);
 }
 
-/* Estado activo de la pestaña seleccionada */
 .nav-btn.active {
   background-color: var(--accent-soft);
   color: var(--accent);
-  border-color: rgba(249, 115, 22, 0.3);
+  border-color: rgba(214, 0, 110, 0.3);
 }
 
-/* Indicador de estado de conexión */
 .header__status {
   display: flex;
   align-items: center;
@@ -240,8 +259,8 @@ img, svg { display: block; }
   animation: pulse 2s infinite;
 }
 
-.status-dot--ok     { background-color: var(--success); }
-.status-dot--error  { background-color: var(--danger); }
+.status-dot--ok    { background-color: var(--success); }
+.status-dot--error { background-color: var(--danger); }
 
 .status-label {
   font-size: 0.75rem;
@@ -252,14 +271,10 @@ img, svg { display: block; }
 
 /* ── 5. SECCIONES ── */
 
-/* Ocultar sección inactiva */
 .hidden { display: none !important; }
 
-.section {
-  animation: fadeInUp 0.3s ease forwards;
-}
+.section { animation: fadeInUp 0.3s ease forwards; }
 
-/* Encabezado de sección con título y botón de acción */
 .section__header {
   display: flex;
   align-items: flex-start;
@@ -276,7 +291,6 @@ img, svg { display: block; }
   line-height: 1;
 }
 
-/* Línea decorativa bajo el título */
 .section__title::after {
   content: '';
   display: block;
@@ -333,7 +347,6 @@ img, svg { display: block; }
   box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
-/* Contador de resultados a la derecha del input */
 .search-bar__count {
   margin-left: var(--space-4);
   font-size: 0.75rem;
@@ -348,7 +361,7 @@ img, svg { display: block; }
   background-color: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  overflow: hidden; /* Oculta esquinas de la tabla */
+  overflow: hidden;
 }
 
 .data-table {
@@ -357,7 +370,6 @@ img, svg { display: block; }
   font-size: 0.875rem;
 }
 
-/* Encabezados de columna */
 .data-table thead tr {
   background-color: var(--bg-elevated);
   border-bottom: 1px solid var(--border);
@@ -374,102 +386,122 @@ img, svg { display: block; }
   white-space: nowrap;
 }
 
-/* Filas de datos */
 .data-table tbody tr {
   border-bottom: 1px solid var(--border);
-  cursor: pointer;
   transition: background-color var(--transition);
 }
 
 .data-table tbody tr:last-child { border-bottom: none; }
 
-.data-table tbody tr:hover {
+/* Filas clickeables muestran cursor pointer y hover activo */
+.data-table tbody tr.row--clickable {
+  cursor: pointer;
+}
+
+.data-table tbody tr.row--clickable:hover {
   background-color: var(--bg-elevated);
 }
 
-/* Animación al seleccionar fila con doble clic */
-.data-table tbody tr:active {
+/* Efecto al hacer clic (feedback visual) */
+.data-table tbody tr.row--clickable:active {
   background-color: var(--accent-soft);
 }
 
 .data-table td {
   padding: var(--space-3) var(--space-4);
-  color: var(--text-primary);
+  color: var(--text-secondary);
   vertical-align: middle;
 }
 
-/* Versión compacta para la sub-tabla de detalles */
+/* Tabla compacta para sub-tablas en modales */
 .data-table--compact th,
 .data-table--compact td {
   padding: var(--space-2) var(--space-3);
-  font-size: 0.825rem;
 }
 
-/* Estado vacío cuando no hay resultados */
+/* Mensaje de tabla vacía */
 .table-empty {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: var(--space-3);
-  padding: var(--space-10);
+  padding: var(--space-10) var(--space-4);
   color: var(--text-muted);
   font-size: 0.875rem;
 }
 
-.table-empty svg {
-  width: 32px;
-  height: 32px;
-  opacity: 0.4;
-}
+.table-empty svg { width: 32px; height: 32px; opacity: 0.4; }
 
 
 /* ── 8. MODALES ── */
 
-/* Overlay oscuro detrás del modal */
 .modal-overlay {
+  display: none; /* Oculto por defecto; JS quita el atributo [hidden] para mostrarlo */
   position: fixed;
   inset: 0;
-  z-index: 200;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(4px);
-  display: flex;
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 200;
   align-items: center;
   justify-content: center;
   padding: var(--space-4);
-  animation: fadeIn 0.2s ease;
 }
 
-/* Cuando el modal está oculto no se muestra (atributo hidden en HTML) */
-.modal-overlay[hidden] { display: none; }
+/* Cuando JS elimina [hidden], el modal pasa a flex y centra el contenido */
+.modal-overlay:not([hidden]) {
+  display: flex;
+}
 
-/* Contenedor del modal */
 .modal {
   background-color: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
   width: 100%;
-  max-width: 560px;
+  max-width: 540px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: var(--shadow-lg);
-  animation: slideUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: slideUp 0.25s ease;
 }
 
-/* Modal más ancho para detalles con sub-tablas */
-.modal--wide { max-width: 740px; }
+/* Modal ancho para detalles de cliente/historial */
+.modal--wide { max-width: 760px; }
 
-/* Encabezado del modal */
+/* Modal alto para el historial (más contenido vertical) */
+.modal--tall { max-height: 92vh; }
+
 .modal__header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  padding: var(--space-5) var(--space-6);
+  padding: var(--space-5) var(--space-6) var(--space-4);
   border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
-  background-color: var(--bg-surface);
-  z-index: 1;
+  gap: var(--space-4);
+  flex-shrink: 0;
+}
+
+/* Área de título + subtítulo en el header del modal de historial */
+.modal__header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Subtítulo debajo del título en el modal de historial */
+.modal__subtitle {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+/* Grupo de acciones en el header (botón + cerrar) */
+.modal__header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
 }
 
 .modal__title {
@@ -477,15 +509,15 @@ img, svg { display: block; }
   font-size: 1.5rem;
   letter-spacing: 0.04em;
   color: var(--text-primary);
+  line-height: 1;
 }
 
-/* Botón de cierre (X) */
 .modal__close {
-  width: 32px;
-  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 32px;
+  height: 32px;
   background: transparent;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
@@ -502,23 +534,20 @@ img, svg { display: block; }
   color: var(--danger);
 }
 
-/* Formulario dentro del modal */
-.modal__form {
-  padding: var(--space-6);
-}
+.modal__form { padding: var(--space-6); }
 
-/* Fila de botones al final del modal */
 .modal__actions {
   display: flex;
   justify-content: flex-end;
   gap: var(--space-3);
-  padding-top: var(--space-5);
+  padding: var(--space-5) var(--space-6);
   border-top: 1px solid var(--border);
-  margin-top: var(--space-5);
+  margin-top: 0;
+  flex-shrink: 0;
 }
 
 
-/* ── FICHA DE CLIENTE (en modal de detalles) ── */
+/* ── 9. FICHA DE CLIENTE (en modal de detalles) ── */
 
 .client-card {
   display: grid;
@@ -548,10 +577,7 @@ img, svg { display: block; }
   font-weight: 500;
 }
 
-/* Sección de sub-contenido en modal de detalles */
-.detail-section {
-  padding: var(--space-6);
-}
+.detail-section { padding: var(--space-6); }
 
 .detail-section__title {
   display: flex;
@@ -566,24 +592,25 @@ img, svg { display: block; }
   margin-bottom: var(--space-4);
 }
 
-.detail-section__title svg {
-  width: 14px;
-  height: 14px;
-  color: var(--accent);
-}
+.detail-section__title svg { width: 14px; height: 14px; color: var(--accent); }
 
 
-/* ── 9. FORMULARIOS ── */
+/* ── 10. FORMULARIOS ── */
 
-/* Grid de dos columnas para los campos */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-4);
 }
 
+/* Clase para campos que deben ocupar todo el ancho del grid */
+.form-field--full {
+  grid-column: 1 / -1;
+}
+
 @media (max-width: 500px) {
   .form-grid { grid-template-columns: 1fr; }
+  .form-field--full { grid-column: 1; }
 }
 
 .form-field {
@@ -600,9 +627,9 @@ img, svg { display: block; }
   color: var(--text-secondary);
 }
 
-/* Inputs y selects del formulario */
 .form-field input,
-.form-field select {
+.form-field select,
+.form-field textarea {
   padding: var(--space-3) var(--space-4);
   background-color: var(--bg-elevated);
   border: 1px solid var(--border);
@@ -615,22 +642,30 @@ img, svg { display: block; }
   appearance: none;
 }
 
-.form-field input::placeholder { color: var(--text-muted); }
+/* Textarea: sin resize horizontal */
+.form-field textarea {
+  resize: vertical;
+  line-height: 1.5;
+  min-height: 90px;
+}
+
+.form-field input::placeholder,
+.form-field textarea::placeholder { color: var(--text-muted); }
 
 .form-field input:focus,
-.form-field select:focus {
+.form-field select:focus,
+.form-field textarea:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
-/* Campo con error de validación */
 .form-field input.error,
-.form-field select.error {
+.form-field select.error,
+.form-field textarea.error {
   border-color: var(--danger);
   box-shadow: 0 0 0 3px var(--danger-soft);
 }
 
-/* Select: flecha personalizada */
 .form-field select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238892a4' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -646,7 +681,7 @@ img, svg { display: block; }
 }
 
 
-/* ── 10. BOTONES ── */
+/* ── 11. BOTONES ── */
 
 .btn {
   display: inline-flex;
@@ -664,7 +699,14 @@ img, svg { display: block; }
 
 .btn svg { width: 15px; height: 15px; flex-shrink: 0; }
 
-/* Botón primario: naranja sólido */
+/* Botón pequeño (usado en el header del modal de historial) */
+.btn--sm {
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.8rem;
+}
+
+.btn--sm svg { width: 13px; height: 13px; }
+
 .btn--primary {
   background-color: var(--accent);
   color: #fff;
@@ -679,7 +721,6 @@ img, svg { display: block; }
   transform: translateY(-1px);
 }
 
-/* Botón fantasma: sin relleno */
 .btn--ghost {
   background-color: transparent;
   color: var(--text-secondary);
@@ -691,30 +732,59 @@ img, svg { display: block; }
   color: var(--text-primary);
 }
 
-/* Botón outline: borde visible */
 .btn--outline {
   background-color: transparent;
   color: var(--accent);
   border-color: var(--accent);
 }
 
-.btn--outline:hover {
-  background-color: var(--accent-soft);
-}
+.btn--outline:hover { background-color: var(--accent-soft); }
 
-/* Botón de peligro: rojo */
 .btn--danger {
   background-color: transparent;
   color: var(--danger);
   border-color: var(--danger);
 }
 
-.btn--danger:hover {
+.btn--danger:hover { background-color: var(--danger-soft); }
+
+/* Botón de ícono solo (acciones en tabla) */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  transition: all var(--transition);
+  cursor: pointer;
+}
+
+.btn-icon svg { width: 14px; height: 14px; }
+
+.btn-icon:hover {
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+  border-color: var(--border-focus);
+}
+
+.btn-icon--history:hover {
+  background-color: var(--accent-soft);
+  color: var(--accent);
+  border-color: rgba(214, 0, 110, 0.4);
+}
+
+.btn-icon--danger:hover {
   background-color: var(--danger-soft);
+  color: var(--danger);
+  border-color: var(--danger);
 }
 
 
-/* ── 11. BADGES DE ESTADO ── */
+/* ── 12. BADGES DE ESTADO ── */
 
 .badge {
   display: inline-flex;
@@ -728,7 +798,6 @@ img, svg { display: block; }
   text-transform: uppercase;
 }
 
-/* Punto indicador dentro del badge */
 .badge::before {
   content: '';
   width: 6px;
@@ -753,7 +822,150 @@ img, svg { display: block; }
 .badge--eliminado::before { background-color: var(--danger); }
 
 
-/* ── 12. TOAST / NOTIFICACIONES ── */
+/* ── 13. HISTORIAL DE SERVICIOS (NUEVO) ── */
+
+/*
+  Tarjetas de estadísticas en el encabezado del modal de historial.
+  Muestra: cantidad de servicios, último KM y costo total.
+*/
+.historial-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--border);
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.stat-card__label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+.stat-card__value {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+/* La tarjeta de costo total usa el color de acento para destacar */
+.stat-card--accent .stat-card__value {
+  color: var(--accent);
+}
+
+/* Celda de descripción en la tabla de historial: texto truncado */
+.desc-truncada {
+  max-width: 240px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+/* Grupo de botones de acción dentro de la tabla de historial */
+.actions-cell {
+  display: flex;
+  gap: var(--space-1);
+  align-items: center;
+}
+
+
+/* ── 14. DETALLE DE SERVICIO (NUEVO) ── */
+
+/*
+  Panel de detalle que se muestra dentro del modal de detalle de servicio.
+  Organiza la información en una cuadrícula de campos.
+*/
+.servicio-detalle {
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* Fila de datos meta: ID, fecha, KM, costo */
+.servicio-detalle__meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-3);
+}
+
+.servicio-detalle__campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.servicio-detalle__label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+.servicio-detalle__valor {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* Costo: destaca con el color de acento */
+.servicio-detalle__valor--costo {
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  letter-spacing: 0.03em;
+}
+
+/* Bloque de descripción completa (texto largo) */
+.servicio-detalle__descripcion {
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-5);
+}
+
+.servicio-detalle__descripcion-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: var(--space-3);
+}
+
+.servicio-detalle__descripcion-texto {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  /* Preserva saltos de línea intencionales */
+  white-space: pre-wrap;
+}
+
+
+/* ── 15. TOAST / NOTIFICACIONES ── */
 
 .toast-container {
   position: fixed;
@@ -795,7 +1007,7 @@ img, svg { display: block; }
 .toast--info svg { color: var(--accent); }
 
 
-/* ── 13. ANIMACIONES ── */
+/* ── 16. ANIMACIONES ── */
 
 @keyframes fadeIn {
   from { opacity: 0; }
@@ -828,34 +1040,497 @@ img, svg { display: block; }
 }
 
 
-/* ── 14. UTILIDADES ── */
+/* ── 17. UTILIDADES ── */
 
-/* Scrollbar personalizada para modales y tablas */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 3px;
-}
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--border-focus); }
 
-/* Responsive: colapsa el header en móvil */
+/* Responsive móvil */
 @media (max-width: 640px) {
-  .header {
-    flex-wrap: wrap;
-    padding: var(--space-3) var(--space-4);
-  }
-
-  .header__brand {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-3);
-  }
-
+  .header { flex-wrap: wrap; padding: var(--space-3) var(--space-4); }
+  .header__brand { flex-direction: column; align-items: flex-start; gap: var(--space-3); }
   .main { padding: var(--space-5) var(--space-4); }
-
   .section__title { font-size: 1.8rem; }
-
   .modal { margin: var(--space-4); }
   .modal--wide { max-width: calc(100% - var(--space-4) * 2); }
+  .historial-stats { grid-template-columns: 1fr 1fr; }
+  .historial-stats .stat-card:last-child { grid-column: 1 / -1; }
+  .modal__header-actions { flex-direction: column; align-items: flex-end; }
+}
+
+/* ── BOTÓN HISTORIAL EN TABLA DE VEHÍCULOS (ficha cliente) ── */
+
+/* El botón outline pequeño dentro de tablas compactas */
+.data-table--compact .btn--sm {
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
+.data-table--compact .btn--sm svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* La fila clickeable resalta toda la fila al hover para dar feedback claro */
+.data-table tbody tr.row--clickable:hover .btn--sm.btn--outline {
+  background-color: var(--accent-soft);
+}
+
+/* ── BOTÓN DE TEMA (claro / oscuro) ── */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.theme-toggle svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  transition: transform 0.4s ease;
+}
+
+.theme-toggle:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Rotación del ícono al activar el tema claro */
+html.light .theme-toggle svg {
+  transform: rotate(180deg);
+}
+
+/* En tema claro el header tiene sombra sutil en lugar de solo border */
+html.light .header {
+  box-shadow: 0 1px 8px rgba(0,0,0,0.08);
+}
+
+/* Transiciones suaves en todos los elementos al cambiar tema */
+.header, .modal, .table-wrapper, .badge, .btn,
+.search-bar__input, .form-field input, .form-field select,
+.form-field textarea, .data-table thead tr, .stat-card,
+.servicio-detalle__campo, .client-card, .toast {
+  transition: background-color 0.3s ease, border-color 0.3s ease,
+              color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Agrupa el toggle de tema + status en el extremo derecho del header */
+.header__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* ╔══════════════════════════════════════════════════╗
+   ║  18. PRESUPUESTO                                ║
+   ╚══════════════════════════════════════════════════╝ */
+
+/* Bloque de datos del encabezado del presupuesto */
+.presupuesto-header-form {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin-bottom: var(--space-5);
+}
+
+.pres-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 160px 140px;
+  gap: var(--space-4);
+}
+
+@media (max-width: 768px) {
+  .pres-form-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 480px) {
+  .pres-form-grid { grid-template-columns: 1fr; }
+}
+
+/* Wrapper de la tabla de ítems */
+.presupuesto-tabla-wrapper {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* Tabla de ítems — overrides para inputs inline */
+.presupuesto-tabla td {
+  padding: 6px 10px;
+  vertical-align: middle;
+}
+
+/* Input inline dentro de la tabla de presupuesto */
+.pres-input {
+  width: 100%;
+  padding: 7px 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  outline: none;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.pres-input:hover {
+  background: var(--bg-elevated);
+  border-color: var(--border);
+}
+
+.pres-input:focus {
+  background: var(--bg-elevated);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+.pres-input::placeholder { color: var(--text-muted); }
+
+/* Input de cantidad: centrado, más angosto */
+.pres-input--cant {
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Input de precio: alineado a la derecha */
+.pres-input--precio {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Celda de total de la fila: no editable, destacada */
+.pres-total-fila {
+  text-align: right;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  padding-right: 14px !important;
+}
+
+/* Botón eliminar fila */
+.btn-eliminar-fila {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+
+.btn-eliminar-fila svg { width: 14px; height: 14px; }
+
+.btn-eliminar-fila:hover {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+/* Fila de totales al pie de la tabla */
+.presupuesto-totales {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--border);
+  background: var(--bg-elevated);
+  gap: var(--space-4);
+}
+
+/* Caja del TOTAL final */
+.presupuesto-total-box {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-5);
+  background: var(--accent-soft);
+  border: 1px solid rgba(214, 0, 110, 0.3);
+  border-radius: var(--radius-md);
+}
+
+.total-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.total-valor {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+  min-width: 120px;
+  text-align: right;
+}
+
+/* Fila placeholder cuando no hay ítems */
+.pres-fila-vacia td {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-style: italic;
+  padding: var(--space-6) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   18. SECCIÓN PRESUPUESTO
+   ═══════════════════════════════════════════════════ */
+
+/* ── Formulario de cabecera del presupuesto ── */
+.presupuesto-header-form {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-6);
+  margin-bottom: var(--space-5);
+}
+
+/* Grid de 4 columnas para los campos de cabecera */
+.pres-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 160px 140px;
+  gap: var(--space-4);
+}
+
+@media (max-width: 768px) {
+  .pres-form-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 480px) {
+  .pres-form-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Tabla de ítems ── */
+.presupuesto-tabla-wrapper {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.presupuesto-tabla {
+  table-layout: fixed;
+}
+
+/* Celda editable de la tabla de ítems */
+.presupuesto-tabla td {
+  padding: var(--space-2) var(--space-3);
+  vertical-align: middle;
+}
+
+/* Inputs inline dentro de la tabla de presupuesto */
+.presupuesto-tabla input[type="number"],
+.presupuesto-tabla input[type="text"] {
+  width: 100%;
+  padding: 6px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  transition: border-color var(--transition), background var(--transition);
+  outline: none;
+}
+
+.presupuesto-tabla input:focus {
+  border-color: var(--accent);
+  background: var(--bg);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+/* Columna de total: solo lectura, resaltada */
+.presupuesto-tabla .td-total {
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  padding-right: var(--space-4);
+  white-space: nowrap;
+}
+
+/* Botón eliminar fila (×) */
+.btn-fila-eliminar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+
+.btn-fila-eliminar svg { width: 14px; height: 14px; }
+
+.btn-fila-eliminar:hover {
+  background: var(--danger-soft);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* ── Fila de totales y botón agregar ── */
+.presupuesto-totales {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--border);
+  gap: var(--space-4);
+  background: var(--bg-elevated);
+}
+
+/* Caja del total final */
+.presupuesto-total-box {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  background: var(--accent-soft);
+  border: 1px solid rgba(214, 0, 110, 0.3);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-5);
+}
+
+.total-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+
+.total-valor {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  min-width: 120px;
+  text-align: right;
+}
+
+/* ── Numeración de filas ── */
+.presupuesto-tabla .td-num {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-align: center;
+  width: 32px;
+  font-family: monospace;
+}
+
+/* Hover de fila en tabla de presupuesto */
+.presupuesto-tabla tbody tr:hover {
+  background: var(--bg-elevated);
+}
+
+/* Mensaje de tabla vacía en presupuesto */
+.presupuesto-tabla tbody tr.fila-vacia td {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-style: italic;
+  padding: var(--space-8);
+}
+
+
+/* ═══════════════════════════════════════════════════
+   19. MODAL DE PREVISUALIZACIÓN PDF
+   ═══════════════════════════════════════════════════ */
+
+/* Overlay que ocupa casi toda la pantalla */
+.modal-overlay--fullscreen {
+  padding: var(--space-3);
+}
+
+/* Modal que llena casi todo el viewport */
+.modal--preview {
+  max-width: 880px;
+  width: 100%;
+  /* Ocupa casi todo el alto disponible */
+  height: calc(100vh - 32px);
+  max-height: calc(100vh - 32px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* El scroll lo maneja el iframe internamente */
+}
+
+/* El cuerpo del preview contiene el iframe */
+.pdf-preview-body {
+  flex: 1;
+  overflow: hidden;
+  background: #525659; /* Fondo gris estilo visor de PDF */
+  border-bottom-left-radius: var(--radius-xl);
+  border-bottom-right-radius: var(--radius-xl);
+}
+
+/* El iframe ocupa todo el espacio disponible */
+.pdf-preview-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/* El header del modal preview no tiene borde inferior tan marcado */
+.modal--preview .modal__header {
+  padding: var(--space-4) var(--space-5);
+  flex-shrink: 0;
+}
+
+.modal--preview .modal__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 1.2rem;
+}
+
+.modal--preview .modal__title svg {
+  width: 18px;
+  height: 18px;
+  color: var(--accent);
+}
+
+@media (max-width: 600px) {
+  .modal-overlay--fullscreen { padding: 0; }
+  .modal--preview {
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+  .pdf-preview-body {
+    border-radius: 0;
+  }
 }

@@ -22,9 +22,29 @@
        ============================================= -->
   <header class="header">
     <div class="header__brand">
-      <!-- Logo + Nombre -->
+
+      <!--
+        LOGO DESDE GOOGLE DRIVE
+        ────────────────────────
+        Para usar tu imagen de Drive:
+        1. Abrí la imagen en Google Drive
+        2. Click derecho → "Compartir" → "Cualquier persona con el enlace" (Lector)
+        3. Copiá el ID del archivo de la URL:
+           https://drive.google.com/file/d/[ESTE-ES-EL-ID]/view
+        4. Reemplazá DRIVE_FILE_ID por ese ID en el atributo src de abajo
+        Ejemplo: src="https://drive.google.com/thumbnail?id=1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs&sz=w200"
+      -->
       <div class="header__logo">
-        <img src="IMG_3142.PNG" alt="Dico Racing" class="header__logo-img" />
+        <img
+          src="https://drive.google.com/thumbnail?id=1F44bBGkDJoBYZ80IhotvbdNJwsvcOnrI&sz=w200"
+          alt="Taller Dico"
+          class="header__logo-img"
+          onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='inline-flex';"
+        />
+        <!-- Ícono de reemplazo si la imagen no carga (Drive ID no configurado) -->
+        <span id="logoFallback" class="header__logo-fallback" style="display:none">
+          <i data-lucide="wrench"></i>
+        </span>
         <div class="header__brand-text">
           <span class="header__brand-name">Taller Dico</span>
           <span class="header__brand-sub">Sistema de Gestión</span>
@@ -41,26 +61,35 @@
           <i data-lucide="car"></i>
           Vehículos
         </button>
+        <button class="nav-btn" data-section="presupuesto">
+          <i data-lucide="file-text"></i>
+          Presupuesto
+        </button>
       </nav>
     </div>
 
-    <!-- Indicador de conexión con Google Sheets -->
-    <div class="header__status">
-      <span class="status-dot status-dot--ok" id="connectionStatus" title="Datos simulados (reemplazar con Google Apps Script)"></span>
-      <span class="status-label">Modo Demo</span>
+    <!-- Controles del header: tema + estado de conexión -->
+    <div class="header__controls">
+      <!-- Botón para alternar entre tema oscuro y claro -->
+      <button class="theme-toggle" id="btnThemeToggle" title="Cambiar tema">
+        <i data-lucide="sun"></i>
+        <span id="themeLabel">Tema claro</span>
+      </button>
+      <!-- Indicador de conexión con Google Sheets -->
+      <div class="header__status">
+        <span class="status-dot status-dot--ok" id="connectionStatus"></span>
+        <!-- <span class="status-label">Modo Demo</span> -->
+      </div>
     </div>
   </header>
 
   <!-- =============================================
        ÁREA DE CONTENIDO DINÁMICO (SPA)
-       El JS inyectará las secciones aquí
        ============================================= -->
   <main class="main" id="mainContent" role="main">
 
     <!-- ── SECCIÓN: CLIENTES ── -->
     <section class="section" id="section-clientes" aria-label="Gestión de Clientes">
-
-      <!-- Encabezado de sección -->
       <div class="section__header">
         <div>
           <h1 class="section__title">Clientes</h1>
@@ -72,53 +101,34 @@
         </button>
       </div>
 
-      <!-- Barra de búsqueda con filtro en tiempo real -->
       <div class="search-bar">
         <i data-lucide="search" class="search-bar__icon"></i>
-        <input
-          type="search"
-          id="searchClientes"
-          class="search-bar__input"
-          placeholder="Buscar por nombre…"
-          aria-label="Filtrar clientes por nombre"
-          autocomplete="off"
-        />
-        <!-- Contador de resultados -->
+        <input type="search" id="searchClientes" class="search-bar__input"
+          placeholder="Buscar por nombre…" aria-label="Filtrar clientes" autocomplete="off" />
         <span class="search-bar__count" id="countClientes">0 registros</span>
       </div>
 
-      <!-- Tabla de clientes -->
       <div class="table-wrapper">
         <table class="data-table" id="tablaClientes" aria-label="Listado de clientes">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Teléfono 1</th>
-              <th>Direccion</th>
-              <th>Email</th>
-             <!--  <th>Estado</th> -->
+              <th>ID</th><th>Nombre</th><th>Teléfono 1</th><th>Dirección</th><th>Email</th>
             </tr>
           </thead>
-          <!-- El JS renderiza las filas aquí -->
           <tbody id="tbodyClientes"></tbody>
         </table>
-
-        <!-- Mensaje cuando no hay resultados -->
         <div class="table-empty" id="emptyClientes" hidden>
-          <i data-lucide="inbox"></i>
-          <p>Sin resultados para tu búsqueda.</p>
+          <i data-lucide="inbox"></i><p>Sin resultados para tu búsqueda.</p>
         </div>
       </div>
     </section>
 
     <!-- ── SECCIÓN: VEHÍCULOS ── -->
     <section class="section hidden" id="section-vehiculos" aria-label="Gestión de Vehículos">
-
       <div class="section__header">
         <div>
           <h1 class="section__title">Vehículos</h1>
-          <p class="section__subtitle">Flota registrada en el sistema</p>
+          <p class="section__subtitle">Clic en un vehículo para ver su historial de servicios</p>
         </div>
         <button class="btn btn--primary" id="btnAgregarVehiculo">
           <i data-lucide="plus-circle"></i>
@@ -126,17 +136,10 @@
         </button>
       </div>
 
-      <!-- Barra de búsqueda vehículos -->
       <div class="search-bar">
         <i data-lucide="search" class="search-bar__icon"></i>
-        <input
-          type="search"
-          id="searchVehiculos"
-          class="search-bar__input"
-          placeholder="Buscar por patente, marca o modelo…"
-          aria-label="Filtrar vehículos"
-          autocomplete="off"
-        />
+        <input type="search" id="searchVehiculos" class="search-bar__input"
+          placeholder="Buscar por patente, marca o modelo…" aria-label="Filtrar vehículos" autocomplete="off" />
         <span class="search-bar__count" id="countVehiculos">0 registros</span>
       </div>
 
@@ -144,31 +147,111 @@
         <table class="data-table" id="tablaVehiculos" aria-label="Listado de vehículos">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Patente</th>
-              <th>Marca</th>
-              <th>Modelo</th>
-              <th>Año</th>
-              <th>Color</th>
-              <th>Cliente</th>
-              <th>Estado</th>
+              <th>ID</th><th>Patente</th><th>Marca</th><th>Modelo</th>
+              <th>Año</th><th>Color</th><th>Cliente</th><th>Estado</th>
+              <!-- Columna vacía para el botón de historial -->
+              <th></th>
             </tr>
           </thead>
           <tbody id="tbodyVehiculos"></tbody>
         </table>
         <div class="table-empty" id="emptyVehiculos" hidden>
-          <i data-lucide="inbox"></i>
-          <p>Sin resultados para tu búsqueda.</p>
+          <i data-lucide="inbox"></i><p>Sin resultados para tu búsqueda.</p>
         </div>
       </div>
     </section>
+
+    <!-- ── SECCIÓN: PRESUPUESTO ── -->
+    <section class="section hidden" id="section-presupuesto" aria-label="Generador de Presupuestos">
+
+      <div class="section__header">
+        <div>
+          <h1 class="section__title">Presupuesto</h1>
+          <p class="section__subtitle">Generá y exportá presupuestos en PDF</p>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <button class="btn btn--ghost" id="btnLimpiarPresupuesto">
+            <i data-lucide="rotate-ccw"></i>
+            Nuevo
+          </button>
+          <button class="btn btn--primary" id="btnExportarPDF">
+            <i data-lucide="eye"></i>
+            Vista previa PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- Datos del encabezado del presupuesto -->
+      <div class="presupuesto-header-form">
+
+        <!-- Fila 1: cliente + vehículo (opcional, libre) -->
+        <div class="pres-form-grid">
+          <div class="form-field">
+            <label for="presCliente">Cliente</label>
+            <input type="text" id="presCliente" placeholder="Nombre del cliente" autocomplete="off" />
+          </div>
+          <div class="form-field">
+            <label for="presVehiculo">Vehículo / Referencia</label>
+            <input type="text" id="presVehiculo" placeholder="Ej: Ford Fiesta AB220BU" autocomplete="off" />
+          </div>
+          <div class="form-field">
+            <label for="presFecha">Fecha</label>
+            <input type="date" id="presFecha" />
+          </div>
+          <div class="form-field">
+            <label for="presValidez">Válido por (días)</label>
+            <input type="number" id="presValidez" value="15" min="1" max="365" placeholder="Ej: 15" />
+          </div>
+        </div>
+
+        <!-- Observaciones opcionales -->
+        <div class="form-field" style="margin-top:12px">
+          <label for="presObservaciones">Observaciones / Notas</label>
+          <textarea id="presObservaciones" rows="2" placeholder="Condiciones de pago, garantía, aclaraciones…"></textarea>
+        </div>
+      </div>
+
+      <!-- Tabla de ítems del presupuesto -->
+      <div class="presupuesto-tabla-wrapper">
+        <table class="data-table presupuesto-tabla" id="tablaPresupuesto">
+          <thead>
+            <tr>
+              <th style="width:60px">N°</th>
+              <th style="width:90px">Cant.</th>
+              <th>Detalle del servicio / insumo</th>
+              <th style="width:140px">Precio unitario</th>
+              <th style="width:130px">Total</th>
+              <th style="width:44px"></th>
+            </tr>
+          </thead>
+          <tbody id="tbodyPresupuesto">
+            <!-- Las filas se agregan dinámicamente -->
+          </tbody>
+        </table>
+
+        <!-- Fila de totales -->
+        <div class="presupuesto-totales">
+          <button class="btn btn--ghost btn--sm" id="btnAgregarItem" style="margin-right:auto">
+            <i data-lucide="plus"></i>
+            Agregar ítem
+          </button>
+          <div class="presupuesto-total-box">
+            <span class="total-label">TOTAL</span>
+            <span class="total-valor" id="presTotal">$0,00</span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
 
   </main>
 
   <!-- =============================================
        MODAL: AGREGAR / EDITAR CLIENTE
        ============================================= -->
-  <div class="modal-overlay" id="modalCliente" role="dialog" aria-modal="true" aria-labelledby="modalClienteTitle" hidden>
+  <div class="modal-overlay" id="modalCliente" role="dialog" aria-modal="true"
+       aria-labelledby="modalClienteTitle" hidden>
     <div class="modal">
       <div class="modal__header">
         <h2 class="modal__title" id="modalClienteTitle">Nuevo Cliente</h2>
@@ -192,16 +275,14 @@
           </div>
           <div class="form-field">
             <label for="inputTel2">Dirección</label>
-            <input type="tel" id="inputTel2" name="telefono2" placeholder="Opcional" />
+            <input type="text" id="inputTel2" name="telefono2" placeholder="Opcional" />
           </div>
         </div>
-        <!-- Campo oculto para modo edición -->
         <input type="hidden" id="inputClienteId" name="id" />
         <div class="modal__actions">
           <button type="button" class="btn btn--ghost" data-close="modalCliente">Cancelar</button>
-          <button type="submit" class="btn btn--primary" id="btnGuardarCliente">
-            <i data-lucide="save"></i>
-            Guardar
+          <button type="submit" class="btn btn--primary">
+            <i data-lucide="save"></i> Guardar
           </button>
         </div>
       </form>
@@ -210,9 +291,10 @@
 
   <!-- =============================================
        MODAL: DETALLES DE CLIENTE
-       (se abre con doble clic en una fila)
+       (doble clic en fila de clientes)
        ============================================= -->
-  <div class="modal-overlay" id="modalDetalleCliente" role="dialog" aria-modal="true" aria-labelledby="modalDetalleTitle" hidden>
+  <div class="modal-overlay" id="modalDetalleCliente" role="dialog" aria-modal="true"
+       aria-labelledby="modalDetalleTitle" hidden>
     <div class="modal modal--wide">
       <div class="modal__header">
         <h2 class="modal__title" id="modalDetalleTitle">Ficha de Cliente</h2>
@@ -220,28 +302,15 @@
           <i data-lucide="x"></i>
         </button>
       </div>
-
-      <!-- Ficha con datos del cliente -->
-      <div class="client-card" id="fichaCliente">
-        <!-- El JS renderiza los datos aquí -->
-      </div>
-
-      <!-- Sub-tabla: Vehículos del cliente -->
+      <div class="client-card" id="fichaCliente"></div>
       <div class="detail-section">
         <h3 class="detail-section__title">
-          <i data-lucide="car"></i>
-          Vehículos asociados
+          <i data-lucide="car"></i> Vehículos asociados
         </h3>
         <div class="table-wrapper">
           <table class="data-table data-table--compact" id="tablaVehiculosCliente">
             <thead>
-              <tr>
-                <th>Patente</th>
-                <th>Marca</th>
-                <th>Modelo</th>
-                <th>Año</th>
-                <th>Color</th>
-              </tr>
+              <tr><th>Patente</th><th>Marca</th><th>Modelo</th><th>Año</th><th>Color</th><th style="text-align:right">Historial</th></tr>
             </thead>
             <tbody id="tbodyVehiculosCliente"></tbody>
           </table>
@@ -251,16 +320,148 @@
           </div>
         </div>
       </div>
-
       <div class="modal__actions">
         <button class="btn btn--ghost" data-close="modalDetalleCliente">Cerrar</button>
         <button class="btn btn--outline" id="btnEditarClienteDetalle">
-          <i data-lucide="edit-3"></i>
-          Editar
+          <i data-lucide="edit-3"></i> Editar
         </button>
         <button class="btn btn--danger" id="btnEliminarClienteDetalle">
-          <i data-lucide="trash-2"></i>
-          Eliminar
+          <i data-lucide="trash-2"></i> Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================
+       MODAL: HISTORIAL DEL VEHÍCULO
+       (clic en fila de vehículos)
+       ============================================= -->
+  <div class="modal-overlay" id="modalHistorial" role="dialog" aria-modal="true"
+       aria-labelledby="modalHistorialTitle" hidden>
+    <div class="modal modal--wide modal--tall">
+      <div class="modal__header">
+        <div class="modal__header-info">
+          <!-- Título: "Historial — AB 123 CD" -->
+          <h2 class="modal__title" id="modalHistorialTitle">Historial</h2>
+          <!-- Subtítulo: "Toyota Corolla 2019 · Blanco" -->
+          <span class="modal__subtitle" id="modalHistorialSubtitle"></span>
+        </div>
+        <div class="modal__header-actions">
+          <button class="btn btn--primary btn--sm" id="btnNuevoServicio">
+            <i data-lucide="plus"></i> Nuevo Servicio
+          </button>
+          <button class="modal__close" data-close="modalHistorial" aria-label="Cerrar">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tarjetas de estadísticas del vehículo (último KM, cant. servicios, total gastado) -->
+      <div class="historial-stats" id="historialStats"></div>
+
+      <div class="detail-section">
+        <div class="table-wrapper">
+          <table class="data-table data-table--compact" id="tablaHistorial">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>KM</th>
+                <th>Descripción</th>
+                <th>Costo</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <!-- Clic simple en cada fila abre el modal de detalle de servicio -->
+            <tbody id="tbodyHistorial"></tbody>
+          </table>
+          <div class="table-empty" id="emptyHistorial" hidden>
+            <i data-lucide="clipboard-list"></i>
+            <p>Sin registros de servicio para este vehículo.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal__actions">
+        <button class="btn btn--ghost" data-close="modalHistorial">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================
+       MODAL: AGREGAR / EDITAR SERVICIO
+       ============================================= -->
+  <div class="modal-overlay" id="modalServicio" role="dialog" aria-modal="true"
+       aria-labelledby="modalServicioTitle" hidden>
+    <div class="modal">
+      <div class="modal__header">
+        <h2 class="modal__title" id="modalServicioTitle">Nuevo Servicio</h2>
+        <button class="modal__close" data-close="modalServicio" aria-label="Cerrar">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form class="modal__form" id="formServicio" novalidate>
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="inputFecha">Fecha *</label>
+            <input type="date" id="inputFecha" name="fecha" required />
+          </div>
+          <div class="form-field">
+            <label for="inputKM">Kilometraje *</label>
+            <input type="number" id="inputKM" name="km" required placeholder="Ej: 45000" min="0" />
+          </div>
+          <!-- Descripción ocupa el ancho completo del grid -->
+          <div class="form-field form-field--full">
+            <label for="inputDescripcion">Descripción del trabajo *</label>
+            <textarea
+              id="inputDescripcion"
+              name="descripcion"
+              required
+              placeholder="Detallá los trabajos realizados, piezas reemplazadas, observaciones…"
+              rows="4"
+            ></textarea>
+          </div>
+          <div class="form-field">
+            <label for="inputCosto">Costo ($)</label>
+            <input type="number" id="inputCosto" name="costo" placeholder="Ej: 15000" min="0" step="0.01" />
+          </div>
+        </div>
+        <!-- Campos ocultos para modo edición y para asociar al vehículo -->
+        <input type="hidden" id="inputServicioId" name="id" />
+        <input type="hidden" id="inputServicioVehiculoId" name="idVehiculo" />
+        <div class="modal__actions">
+          <button type="button" class="btn btn--ghost" data-close="modalServicio">Cancelar</button>
+          <button type="submit" class="btn btn--primary">
+            <i data-lucide="save"></i> Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =============================================
+       MODAL: DETALLE COMPLETO DE SERVICIO
+       (clic simple en una fila del historial)
+       ============================================= -->
+  <div class="modal-overlay" id="modalDetalleServicio" role="dialog" aria-modal="true"
+       aria-labelledby="modalDetalleServicioTitle" hidden>
+    <div class="modal">
+      <div class="modal__header">
+        <h2 class="modal__title" id="modalDetalleServicioTitle">Detalle del Servicio</h2>
+        <button class="modal__close" data-close="modalDetalleServicio" aria-label="Cerrar">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <!-- El JS inyecta aquí el detalle completo del servicio seleccionado -->
+      <div class="servicio-detalle" id="servicioDetalleContent"></div>
+      <div class="modal__actions">
+        <button class="btn btn--ghost" data-close="modalDetalleServicio">Cerrar</button>
+        <button class="btn btn--outline" id="btnEditarServicio">
+          <i data-lucide="edit-3"></i> Editar
+        </button>
+        <button class="btn btn--danger" id="btnEliminarServicio">
+          <i data-lucide="trash-2"></i> Eliminar
         </button>
       </div>
     </div>
@@ -269,7 +470,8 @@
   <!-- =============================================
        MODAL: AGREGAR VEHÍCULO
        ============================================= -->
-  <div class="modal-overlay" id="modalVehiculo" role="dialog" aria-modal="true" aria-labelledby="modalVehiculoTitle" hidden>
+  <div class="modal-overlay" id="modalVehiculo" role="dialog" aria-modal="true"
+       aria-labelledby="modalVehiculoTitle" hidden>
     <div class="modal">
       <div class="modal__header">
         <h2 class="modal__title" id="modalVehiculoTitle">Nuevo Vehículo</h2>
@@ -301,7 +503,6 @@
           </div>
           <div class="form-field">
             <label for="inputClienteVehiculo">Cliente asociado *</label>
-            <!-- El JS puebla este select con clientes activos -->
             <select id="inputClienteVehiculo" name="id_cliente" required>
               <option value="">— Seleccionar cliente —</option>
             </select>
@@ -311,18 +512,56 @@
         <div class="modal__actions">
           <button type="button" class="btn btn--ghost" data-close="modalVehiculo">Cancelar</button>
           <button type="submit" class="btn btn--primary">
-            <i data-lucide="save"></i>
-            Guardar
+            <i data-lucide="save"></i> Guardar
           </button>
         </div>
       </form>
     </div>
   </div>
 
+
+  <!-- =============================================
+       MODAL: PREVISUALIZACIÓN DEL PDF
+       ============================================= -->
+  <div class="modal-overlay modal-overlay--fullscreen" id="modalPdfPreview"
+       role="dialog" aria-modal="true" aria-labelledby="pdfPreviewTitle" hidden>
+    <div class="modal modal--preview">
+      <div class="modal__header">
+        <div class="modal__header-info">
+          <h2 class="modal__title">
+            <i data-lucide="file-text"></i>
+            Vista previa del presupuesto
+          </h2>
+          <span class="modal__subtitle" id="pdfPreviewTitle"></span>
+        </div>
+        <div class="modal__header-actions">
+          <!-- Descarga directa desde la preview -->
+          <button class="btn btn--primary btn--sm" id="btnDescargarDesdePreview">
+            <i data-lucide="download"></i>
+            Descargar PDF
+          </button>
+          <button class="modal__close" id="btnCerrarPreview" aria-label="Cerrar preview">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+      </div>
+      <!-- iframe que renderiza el PDF usando el blob URL -->
+      <div class="pdf-preview-body">
+        <iframe
+          id="pdfPreviewFrame"
+          class="pdf-preview-frame"
+          title="Previsualización del presupuesto PDF"
+          type="application/pdf"
+        ></iframe>
+      </div>
+    </div>
+  </div>
   <!-- Toast de notificaciones -->
   <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
-  <!-- JS principal (módulo) -->
-  <script type="module" src="app.js"></script>
+  <!-- jsPDF: generación de PDF en el navegador (sin servidor) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- JS principal (módulo ES6+) -->
+  <script src="app.js"></script>
 </body>
 </html>
